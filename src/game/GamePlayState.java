@@ -1,11 +1,10 @@
 package game;
 
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Random;
+import java.util.Set;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -28,6 +27,20 @@ public class GamePlayState extends BasicGameState {
     private int keyHit = 30;
     private int keyMissed = 30;
     private int beatCount;
+    public static final Set<Character> top = new HashSet<Character>();
+    public static final Set<Character> mid = new HashSet<Character>();
+    public static final Set<Character> bot = new HashSet<Character>();
+    {
+        for (int i = 16; i < 26; i++) {
+            top.add(Input.getKeyName(i).charAt(0));
+        }
+        for (int i = 30; i < 39; i++) {
+            mid.add(Input.getKeyName(i).charAt(0));
+        }
+        for (int i = 44; i < 51; i++) {
+            bot.add(Input.getKeyName(i).charAt(0));   
+        }
+    }
     
   
     GamePlayState( int stateID ) 
@@ -52,6 +65,13 @@ public class GamePlayState extends BasicGameState {
     }
   
     public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+        g.setColor(Color.gray);  // draw keyboard lines at bottom
+        g.drawLine(285, 410, 375, 410); 
+        g.drawLine(290, 430, 370, 430);
+        g.drawLine(305, 450, 355, 450);
+
+        g.drawLine(330, 390, 330, 470);
+        
         if (keyHit < 20) {
             keyHit++;
             g.setColor(Color.green);
@@ -62,12 +82,19 @@ public class GamePlayState extends BasicGameState {
             g.setColor(Color.white);
         }
         
-        g.drawString("I", 325, 380);
         
         for (int i = beatCount - 7; i < beatCount + 7; i ++) {
 //            g.setColor(g.getColor().darker());
             if (keys.get(i) != null) {
-                g.drawString("" + keys.get(i), 325 + ((i - beatCount) * 25), 400);
+                int y = 400;
+                if (top.contains(keys.get(i))) {
+                    y = 400;
+                } else if (mid.contains(keys.get(i))) {
+                    y = 420;
+                } else {
+                    y = 440;
+                }
+                g.drawString("" + keys.get(i), 325 + ((i - beatCount) * 25), y);
             }
         }
     }
